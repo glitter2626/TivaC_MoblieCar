@@ -22,10 +22,10 @@ class Encoder{
 
 		Encoder(int leftPinA, int leftPinB, int rightPinA, int rightPinB){
 
-			pinMode(leftPinA, INPUT_PULLUP);
-			pinMode(leftPinB, INPUT_PULLUP);
-			pinMode(rightPinA, INPUT_PULLUP);
-			pinMode(rightPinB, INPUT_PULLUP);
+			this->leftPinA = leftPinA;
+			this->leftPinB = leftPinB;
+			this->rightPinA = rightPinA;
+			this->rightPinB = rightPinB;
 
 			leftTicks = 0;
 			rightTicks = 0;
@@ -34,6 +34,14 @@ class Encoder{
 			attachInterrupt(leftPinA, this->UpdateLeftEncoder, RISING);
 
 			attachInterrupt(rightPinA, this->UpdateRightEncoder, RISING);
+		};
+
+		void Setup(){
+		
+			pinMode(leftPinA, INPUT_PULLUP);
+			pinMode(leftPinB, INPUT_PULLUP);
+			pinMode(rightPinA, INPUT_PULLUP);
+			pinMode(rightPinB, INPUT_PULLUP);
 		};
 
 		volatile long UpdateEncoder(){
