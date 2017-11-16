@@ -36,7 +36,7 @@ class Encoder{
 			attachInterrupt(rightPinA, this->UpdateRightEncoder, RISING);
 		};
 
-		void Setup(){
+		void setup(){
 		
 			pinMode(leftPinA, INPUT_PULLUP);
 			pinMode(leftPinB, INPUT_PULLUP);
@@ -44,7 +44,7 @@ class Encoder{
 			pinMode(rightPinB, INPUT_PULLUP);
 		};
 
-		volatile long UpdateEncoder(){
+		long updateLeftEncoder(){
 
 			int leftB = digitalRead(leftPinB);
 
@@ -55,7 +55,7 @@ class Encoder{
 			return leftTicks;
 		};
 
-		volatile long UpdateRightEncoder(){
+		long UpdateRightEncoder(){
 
 			int rightB = digitalRead(rightPinB);
 
@@ -66,16 +66,26 @@ class Encoder{
 			return rightTicks;
 		};
 
-		volatile long GetRevolution(){
+		long getRightTicks(){
 
-			return ticks * 360 / TPR;
+			return rightTicks;
+		};
+
+		long getLeftTicks(){
+
+			return leftTicks;
+		};
+
+		long getCPR(){
+
+			return ticks * 2;
 		}
 
-		void ClearTicks(){
+		void clearTicks(){
 
 			leftTicks = 0;
 			rightTicks = 0;
-			revolution = 0;
+			ticks = 0;
 		};
 };
 #endif

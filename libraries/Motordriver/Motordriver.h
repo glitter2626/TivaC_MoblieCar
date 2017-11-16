@@ -32,8 +32,10 @@ class Motordriver{
 			this->leftB = leftB
 			this->rightPwm = rightPwm;
 
+		};
 
-		void Setup(){
+
+		void setup(){
 			
 			pinMode(leftA, OUTPUT);
 			pinMode(leftB, OUTPUT);
@@ -41,9 +43,9 @@ class Motordriver{
 			pinMode(rightA, OUTPUT);
 			pinMode(rightB, OUTPUT);
 			pinMode(rightPwm, OUTPUT);
-		}
+		};
 
-		void Forward(int pwm){
+		void forward(int pwm){
 
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, LOW);
@@ -52,9 +54,9 @@ class Motordriver{
 			digitalWrite(rightA, LOW);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, pwm);
-		}
+		};
 
-		void Backward(int pwm){
+		void backward(int pwm){
 
 			digitalWrite(leftA, LOW);
 			digitalWrite(leftB, HIGH);
@@ -63,9 +65,9 @@ class Motordriver{
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, LOW);
 			analogWrite(rightPwm, pwm);
-		}
+		};
 
-		void Stop(){
+		void stop(){
 
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, HIGH);
@@ -74,9 +76,9 @@ class Motordriver{
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, 0);
-		}
+		};
 
-		void MoveRight(int pwm){
+		void moveRight(int pwm){
 
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, LOW);
@@ -85,9 +87,9 @@ class Motordriver{
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, 0);
-		}
+		};
 
-		void MoveLeft(int pwm){
+		void moveLeft(int pwm){
 
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, HIGH);
@@ -96,7 +98,7 @@ class Motordriver{
 			digitalWrite(rightA, LOW);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, pwm);
-		}
+		};
 
 };
 

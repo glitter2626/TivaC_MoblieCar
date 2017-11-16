@@ -30,7 +30,7 @@ void setup()
   nh.advertise(pub_range);
   nh.advertise(pub_range_K);
 
-  ultrasonic.SetupUltrasonic();
+  ultrasonic.setupUltrasonic();
   
   
   range_msg.radiation_type = sensor_msgs::Range::ULTRASOUND;
@@ -55,7 +55,7 @@ void loop()
   //publish the adc value every 50 milliseconds
   //since it takes that long for the sensor to stablize
   if ( millis() >= range_time ){
-    range_msg.range = ultrasonic.UpdateUltrasonic() / 100.0;
+    range_msg.range = ultrasonic.updateUltrasonic() / 100.0;
     range_msg.header.stamp = nh.now();
     pub_range.publish(&range_msg);
 

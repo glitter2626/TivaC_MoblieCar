@@ -17,13 +17,13 @@ class Ultrasonic{
 			this->trig = trig;
 		};
 
-		void SetupUltrasonic(){
+		void setupUltrasonic(){
 
 			pinMode(echo, INPUT);
 			pinMode(trig, OUTPUT);
 		};
 
-		long UpdateUltrasonic(){
+		long updateUltrasonic(){
 
 			digitalWrite(trig, LOW);
 			delayMicroseconds(2);
