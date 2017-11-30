@@ -1,7 +1,7 @@
 # TivaC_MoblieCar
 
 ## ROS Topic:
-Publish : sensor_msgs::Range (IR & Ultrasound) , nav_msgs::Odoemetry \n
+Publish : sensor_msgs::Range (IR & Ultrasound) , nav_msgs::Odoemetry  
 Subscribe : geometry_msgs::Twist
                             reference: http://wiki.ros.org/common_msgs
 ## Tiva TM4C1294 Pin Table: 
