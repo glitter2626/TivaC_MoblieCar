@@ -36,8 +36,6 @@ int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
 
-#define OUTPUT_READABLE_QUATERNION
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 //orientation/motion vars
@@ -48,6 +46,7 @@ Quaternion q;
 //INTERRUPT DETECTION ROUTINE
 
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
+
 void dmpDataReady() {
     mpuInterrupt = true;
 }
@@ -60,9 +59,7 @@ void setup()
   nh.advertise(pub_imu);
 
   imu_msg.header.frame_id =  frameid;
-  
-  //Init Serial port with 115200 buad rate
-  //Serial.begin(115200);  
+ 
   Setup_MPU6050();
 }
 
@@ -91,22 +88,18 @@ void Setup_MPU6050_DMP()
    accelgyro.setXGyroOffset(76);
    accelgyro.setXGyroOffset(-85); 
    accelgyro.setXGyroOffset(1788);  
+   
    if(devStatus == 0){
     
-    accelgyro.setDMPEnabled(true);
-    pinMode(PUSH2,INPUT_PULLUP);    
-    attachInterrupt(PUSH2, dmpDataReady, RISING);
-    mpuIntStatus = accelgyro.getIntStatus();
-    dmpReady = true;
-    packetSize = accelgyro.dmpGetFIFOPacketSize();
+      accelgyro.setDMPEnabled(true);
+      pinMode(PUSH2,INPUT_PULLUP);    
+      attachInterrupt(PUSH2, dmpDataReady, RISING);
+      mpuIntStatus = accelgyro.getIntStatus();
+      dmpReady = true;
+      packetSize = accelgyro.dmpGetFIFOPacketSize();
      
-  }
-  else{
-     
-    ;
     }
-  
-    
+ 
 }
 
 long range_time;
@@ -114,7 +107,6 @@ long range_time;
 void loop()
 {
 
-    //Update MPU 6050
     Update_MPU6050();
 
     nh.spinOnce();    
@@ -154,7 +146,7 @@ void Update_MPU6050_DMP()
         accelgyro.resetFIFO();
     }
 
-else if (mpuIntStatus & 0x02) {
+    else if (mpuIntStatus & 0x02) {
         // wait for correct available data length, should be a VERY short wait
         while (fifoCount < packetSize) fifoCount = accelgyro.getFIFOCount();
 
@@ -165,8 +157,7 @@ else if (mpuIntStatus & 0x02) {
         // (this lets us immediately read more without waiting for an interrupt)
         fifoCount -= packetSize;
 
-        #ifdef OUTPUT_READABLE_QUATERNION
-            // display quaternion values in easy matrix form: w x y z
+        
         accelgyro.dmpGetQuaternion(&q, fifoBuffer);
         accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
@@ -193,7 +184,6 @@ else if (mpuIntStatus & 0x02) {
             range_time =  millis() + 60;
           }
             
-        #endif
     }
 }
 

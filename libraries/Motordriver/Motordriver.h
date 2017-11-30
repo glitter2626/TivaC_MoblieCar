@@ -1,4 +1,4 @@
-#ifndef _MOTOEDRIVER_H_
+#ifndef _MOTOERDRIVER_H_
 #define _MOTOERDRIVER_H_
 
 class Motordriver{
@@ -26,10 +26,10 @@ class Motordriver{
 		Motordriver(int leftA, int leftB, int leftPwm, int rightA, int rightB, int rightPwm){
 
 			this->leftA = leftA;
-			this->leftB = leftB
+			this->leftB = leftB;
 			this->leftPwm = leftPwm;
 			this->rightA = rightA;
-			this->leftB = leftB
+			this->leftB = leftB;
 			this->rightPwm = rightPwm;
 
 		};
@@ -45,26 +45,37 @@ class Motordriver{
 			pinMode(rightPwm, OUTPUT);
 		};
 
-		void forward(int pwm){
+		void drive(int pwmR, int pwmL){
+			
+			if(pwmR > 0 && pwmL > 0)
+				forward(pwmR, pwmL);
+			else if(pwmR < 0 && pwmL < 0)
+				backward(pwmR, pwmL);
+			else 
+				stop();
+			
+		};
+
+		void forward(int pwmR, int pwmL){
 
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, LOW);
-			analogWrite(leftPwm, pwm);
+			analogWrite(leftPwm, pwmL);
 
 			digitalWrite(rightA, LOW);
 			digitalWrite(rightB, HIGH);
-			analogWrite(rightPwm, pwm);
+			analogWrite(rightPwm, pwmR);
 		};
 
-		void backward(int pwm){
+		void backward(int pwmR, int pwmL){
 
 			digitalWrite(leftA, LOW);
 			digitalWrite(leftB, HIGH);
-			analogWrite(leftPwm, pwm);
+			analogWrite(leftPwm, pwmL);
 
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, LOW);
-			analogWrite(rightPwm, pwm);
+			analogWrite(rightPwm, pwmR);
 		};
 
 		void stop(){

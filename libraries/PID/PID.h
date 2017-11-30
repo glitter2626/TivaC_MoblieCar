@@ -32,11 +32,11 @@ class PID{
 		};
 
 		double execute(double value, double feedback){
-		
+			
 			e = value - feedback;
 			e_dot = e - old_e;
 			E = E + e;
-			u = Kp * e + Kd * e_dot + Ki * E;
+			double u = Kp * e + Kd * e_dot + Ki * E;
 			old_e = e;
 
 			return u;

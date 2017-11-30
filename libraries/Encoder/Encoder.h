@@ -5,20 +5,52 @@
 
 class Encoder{
 
-	private:
-
-		int leftPinA;
-		int leftPinB;
-
-		int rightPinA;
-		int rightPinB;
-
-		volatile long leftTicks;
-		volatile long rightTicks;
-
-		volatile long ticks;
-
 	public:
+
+		static int leftPinA;
+		static int leftPinB;
+
+		static int rightPinA;
+		static int rightPinB;
+
+		static volatile long leftTicks;
+		static volatile long rightTicks;
+
+		static volatile long ticks;
+
+		static void setup(){
+		
+			pinMode(leftPinA, INPUT_PULLUP);
+			pinMode(leftPinB, INPUT_PULLUP);
+			pinMode(rightPinA, INPUT_PULLUP);
+			pinMode(rightPinB, INPUT_PULLUP);
+
+			attachInterrupt(leftPinA, updateLeftEncoder, RISING);
+
+			attachInterrupt(rightPinA, updateRightEncoder, RISING);
+		};
+
+		static void updateLeftEncoder(){
+
+			int leftB = digitalRead(leftPinB);
+
+			leftTicks -= leftB? -1 : 1;
+			
+			ticks++;
+
+			//return leftTicks;
+		};
+
+		static void updateRightEncoder(){
+
+			int rightB = digitalRead(rightPinB);
+
+			rightTicks += rightB? -1 : 1;
+
+			ticks++;
+
+			//return rightTicks;
+		};
 
 		Encoder(int leftPinA, int leftPinB, int rightPinA, int rightPinB){
 
@@ -29,63 +61,43 @@ class Encoder{
 
 			leftTicks = 0;
 			rightTicks = 0;
-			ticks = 0
+			ticks = 0;
 
-			attachInterrupt(leftPinA, this->UpdateLeftEncoder, RISING);
-
-			attachInterrupt(rightPinA, this->UpdateRightEncoder, RISING);
 		};
 
-		void setup(){
-		
-			pinMode(leftPinA, INPUT_PULLUP);
-			pinMode(leftPinB, INPUT_PULLUP);
-			pinMode(rightPinA, INPUT_PULLUP);
-			pinMode(rightPinB, INPUT_PULLUP);
-		};
 
-		long updateLeftEncoder(){
-
-			int leftB = digitalRead(leftPinB);
-
-			leftTicks -= leftB? -1 : 1;
-			
-			ticks++;
-
-			return leftTicks;
-		};
-
-		long UpdateRightEncoder(){
-
-			int rightB = digitalRead(rightPinB);
-
-			rightTicks += rightB? -1 : 1;
-
-			ticks++;
+		static long getRightTicks(){
 
 			return rightTicks;
 		};
 
-		long getRightTicks(){
-
-			return rightTicks;
-		};
-
-		long getLeftTicks(){
+		static long getLeftTicks(){
 
 			return leftTicks;
 		};
 
-		long getCPR(){
+		static long getCPR(){
 
 			return ticks * 2;
 		}
 
-		void clearTicks(){
+		static void clearTicks(){
 
 			leftTicks = 0;
 			rightTicks = 0;
 			ticks = 0;
 		};
 };
+
+int Encoder::leftPinA;
+int Encoder::leftPinB;
+
+int Encoder::rightPinA;
+int Encoder::rightPinB;
+
+volatile long Encoder::leftTicks;
+volatile long Encoder::rightTicks;
+
+volatile long Encoder::ticks;
+
 #endif
