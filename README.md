@@ -1,15 +1,15 @@
 # TivaC_MoblieCar
 
 ## ROS Topic: [ROS common_msgs](http://wiki.ros.org/common_msgs)
-Publish : sensor_msgs::Range (IR & Ultrasound) , nav_msgs::Odoemetry  
-Subscribe : geometry_msgs::Twist  
+* Publish : sensor_msgs::Range (IR & Ultrasound) , nav_msgs::Odoemetry  
+* Subscribe : geometry_msgs::Twist  
 
 ## ROS local & remote connect:
 * ssh **name**@**IP**
 * vim /home/.bashrc
 * In local:  
-    export MY_IP=**IP**
-    export ROS_IP=$MY_IP
+    export MY_IP=**IP**  
+    export ROS_IP=$MY_IP  
     export ROS_MASTER_URI="http://"$ROS_IP":11311"
 * In remote:  
     export ROS_MASTER_URI="http://**IP**:11311"
