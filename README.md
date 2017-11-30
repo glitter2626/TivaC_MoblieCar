@@ -6,7 +6,7 @@
 
 ## ROS local & remote connect:
 * ssh **LOCAL_NAME**@**LOCAL_IP**
-* vim /home/.bashrc
+* vim /home/**USER**/.bashrc
 * In local:  
     export MY_IP=**LOCAL_IP**  
     export ROS_IP=$MY_IP  
