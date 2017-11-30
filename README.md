@@ -5,14 +5,14 @@
 * Subscribe : geometry_msgs::Twist  
 
 ## ROS local & remote connect:
-* ssh **name**@**IP**
+* ssh **LOCAL_NAME**@**LOCAL_IP**
 * vim /home/.bashrc
 * In local:  
-    export MY_IP=**IP**  
+    export MY_IP=**LOCAL_IP**  
     export ROS_IP=$MY_IP  
     export ROS_MASTER_URI="http://"$ROS_IP":11311"
 * In remote:  
-    export ROS_MASTER_URI="http://**IP**:11311"
+    export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
                      
 ## Tiva TM4C1294 Pin Table: 
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/23633173_1720082644676737_2065439414_o.jpg)
