@@ -51,8 +51,8 @@ class MobileCar{
 			y = y + Dc * sin(theta);
 			theta = theta + (Dr - Dl) / l;
 
-			double Vr_fbk = Dr / dt;
-			double Vl_fbk = Dl / dt;
+			Vr_fbk = Dr / dt;
+			Vl_fbk = Dl / dt;
 
 			double velocityToPwm = 255 / MAX_VELOCITY;
 

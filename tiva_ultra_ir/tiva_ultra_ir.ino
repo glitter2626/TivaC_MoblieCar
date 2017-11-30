@@ -31,8 +31,11 @@ Encoder encoder(ENCODER_LEFT_A, ENCODER_LEFT_B, ENCODER_RIGHT_A, ENCODER_RIGHT_B
 MobileCar mobileCar(0.0, 0.0, 0.0);     // x, y, theta
 
 /****PID for Kp Kd Ki ,  need test ****/
+
 PID leftPID(0.1, 0.01, 0.01);
 PID rightPID(0.1, 0.01, 0.01);
+
+/**************************************/
 
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
@@ -90,7 +93,6 @@ void twistCb( const geometry_msgs::Twist &twist_msg){
 
 ros::Subscriber<geometry_msgs::Twist> sub("/Twist", &twistCb );
 
-
 void setup()
 {
   old_t = millis();
@@ -136,8 +138,8 @@ void setup()
   ir_msg_K.min_range = 0.02;
   ir_msg_K.max_range = 1.5;
 
-  odometry_msg.header.frame_id = "/base";
-  odometry_msg.child_frame_id = "/base";
+  odometry_msg.header.frame_id = "/base_link";
+  odometry_msg.child_frame_id = "/base_link";
 }
 
 
