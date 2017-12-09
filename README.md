@@ -24,6 +24,6 @@
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/motor_pin.JPG) 
 
 ## Motor driver Pin Table(driver-5v & output for motor-12v):
-![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/motordriver_pin.JPG) 
+![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/motordriver_pin.JPG)  
                                         (from : Learning Robotics using Python)
 
