@@ -19,3 +19,10 @@
 
 ## 3.3 to 5 voltage level shifter direction:
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/3.3V-5V-Logic-Level-Converter-5.jpg)
+
+## Motor Pin Table: 
+![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/motor_pin.JPG) 
+
+## Motor driver Pin Table:
+![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/motordriver_pin.JPG) 
+
