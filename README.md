@@ -14,15 +14,16 @@
 * In remote:  
     export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
                      
-## Tiva TM4C1294 Pin Table: 
+## Tiva TM4C1294 Pin Table(3.3v): 
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/23633173_1720082644676737_2065439414_o.jpg)
 
 ## 3.3 to 5 voltage level shifter direction:
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/3.3V-5V-Logic-Level-Converter-5.jpg)
 
-## Motor Pin Table: 
+## Motor Pin Table(encoder-5v): 
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/motor_pin.JPG) 
 
-## Motor driver Pin Table:
+## Motor driver Pin Table(driver-5v & output for motor-12v):
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/motordriver_pin.JPG) 
+                                                                    (from : Learning Robotics using Python)
 
