@@ -29,7 +29,7 @@ class Motordriver{
 			this->leftB = leftB;
 			this->leftPwm = leftPwm;
 			this->rightA = rightA;
-			this->leftB = leftB;
+			this->rightB = rightB;
 			this->rightPwm = rightPwm;
 
 		};
@@ -71,11 +71,11 @@ class Motordriver{
 
 			digitalWrite(leftA, LOW);
 			digitalWrite(leftB, HIGH);
-			analogWrite(leftPwm, pwmL);
+			analogWrite(leftPwm, -pwmL);
 
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, LOW);
-			analogWrite(rightPwm, pwmR);
+			analogWrite(rightPwm, -pwmR);
 		};
 
 		void stop(){

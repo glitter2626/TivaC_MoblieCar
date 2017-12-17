@@ -35,11 +35,6 @@ uint8_t fifoBuffer[64];
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-//orientation/motion vars
-
 Quaternion q;
 
 
@@ -107,17 +102,10 @@ long range_time;
 void loop()
 {
 
-    Update_MPU6050();
+    Update_MPU6050_DMP();
 
     nh.spinOnce();    
 }
-void Update_MPU6050()
-{
-  
-    Update_MPU6050_DMP();
-
-}
-
 
 void Update_MPU6050_DMP()
 {
@@ -127,12 +115,8 @@ void Update_MPU6050_DMP()
     if (!dmpReady) return;
     
     while (!mpuInterrupt && fifoCount < packetSize) {
-      
       ;    
-      
     }
-
-
 
     mpuInterrupt = false;
     mpuIntStatus = accelgyro.getIntStatus();
@@ -180,10 +164,8 @@ void Update_MPU6050_DMP()
             imu_msg.header.stamp = nh.now();
             pub_imu.publish(&imu_msg);
 
- 
             range_time =  millis() + 60;
-          }
-            
+          }     
     }
 }
 
