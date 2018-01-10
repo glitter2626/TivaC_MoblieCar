@@ -58,13 +58,16 @@ class Motordriver{
 
 		void forward(int pwmR, int pwmL){
 
-			digitalWrite(leftA, HIGH);
-			digitalWrite(leftB, LOW);
-			analogWrite(leftPwm, pwmL);
-
+			
+			
 			digitalWrite(rightA, LOW);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, pwmR);
+			delay(2);
+			digitalWrite(leftA, HIGH);
+			digitalWrite(leftB, LOW);
+			analogWrite(leftPwm, pwmL);
+			delay(2);
 		};
 
 		void backward(int pwmR, int pwmL){
@@ -83,10 +86,12 @@ class Motordriver{
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, HIGH);
 			analogWrite(leftPwm, 0);
+			delay(2);
 
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, 0);
+			delay(2);
 		};
 
 		void moveRight(int pwm){
@@ -94,10 +99,12 @@ class Motordriver{
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, LOW);
 			analogWrite(leftPwm, pwm);
+			delay(2);
 
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, 0);
+			delay(2);
 		};
 
 		void moveLeft(int pwm){
@@ -105,10 +112,12 @@ class Motordriver{
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, HIGH);
 			analogWrite(leftPwm, 0);
+			delay(2);
 
 			digitalWrite(rightA, LOW);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, pwm);
+			delay(2);
 		};
 
 };
