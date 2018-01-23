@@ -9,6 +9,7 @@
 #include <Motordriver.h>
 #include <MobileCar.h>
 #include <PID.h>
+#include <std_msgs/Float64.h>
 
 #define TRIGGER_PIN         12
 #define ECHO_PIN            13
@@ -38,22 +39,26 @@ PID rightPID(0.1, 0.01, 0.01);
 /**************************************/
 
 
-ros::NodeHandle  nh;
+ros::NodeHandle_<TivaCHardware,5,5,2000,2000>  nh;
 
 nav_msgs::Odometry odometry_msg;
 ros::Publisher pub_odometry("/Odometry", &odometry_msg);
 
 
-long old_t;
+std_msgs::Float64 float_msg;
+ros::Publisher pub_float("/ggggg", &float_msg);
+
+unsigned long old_t;
 
 void twistCb( const geometry_msgs::Twist &twist_msg){
 
-  float dt = (millis() - old_t) / 1000;
+  float dt = (millis() - old_t) / (float)1000;
 
   long rightTicks = encoder.getRightTicks();
   long leftTicks = encoder.getLeftTicks();
 
-  mobileCar.execute(twist_msg.linear.x, leftTicks, rightTicks, twist_msg.angular.z, dt, &leftPID, &rightPID);
+  nh.logdebug("Debug Statement");
+  mobileCar.execute(twist_msg.linear.x, twist_msg.angular.z, leftTicks, rightTicks, dt, &leftPID, &rightPID);
 
   motor.drive(mobileCar.getRightPWM(), mobileCar.getLeftPWM());
 
@@ -66,7 +71,8 @@ void twistCb( const geometry_msgs::Twist &twist_msg){
   odometry_msg.twist.twist.angular.z = mobileCar.getTheta();
   // need convariance ??
   pub_odometry.publish(&odometry_msg);
-
+  float_msg.data = dt;
+  pub_float.publish(&float_msg);
   encoder.clearTicks();
   old_t = millis();
   
@@ -82,8 +88,11 @@ void setup()
   nh.initNode();
   
   nh.subscribe(sub);
-  
 
+  nh.advertise(pub_odometry);
+  nh.advertise(pub_float);
+  
+  nh.logdebug("setup Statement");
 
   pinMode(IR_PIN, INPUT);
   motor.setup();
@@ -100,6 +109,7 @@ long range_time;
 
 void loop()
 {
-
+  nh.logdebug("loop Statement");
+  
   nh.spinOnce();
 }
