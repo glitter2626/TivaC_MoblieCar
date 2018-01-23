@@ -5,12 +5,15 @@
 * Subscribe : geometry_msgs::Twist  
 
 ## ROS local & remote connect:
+* IP : ifconfig
+* ttyACM : dmesg | grep tty
+* make sure open ssh : sudo service ssh start ; netstat -a | grep ssh
 * ssh **LOCAL_NAME**@**LOCAL_IP**
 * vim /home/**USER**/.bashrc
 * In local:  
     export MY_IP=**LOCAL_IP**  
     export ROS_IP=$MY_IP  
-    export ROS_MASTER_URI="http://"$ROS_IP":11311"
+    export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
 * In remote:  
     export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
                      
