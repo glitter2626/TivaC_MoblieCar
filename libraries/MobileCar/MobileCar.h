@@ -69,7 +69,7 @@ class MobileCar{
 
 			Vr_fbk = Dr / (dt * radius);
 			Vl_fbk = Dl / (dt * radius);
-		}
+		};
 
 		float getRadius(){
 			return radius;
