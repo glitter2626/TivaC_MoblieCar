@@ -50,30 +50,44 @@ ros::Publisher pub_float("/ggggg", &float_msg);
 
 unsigned long old_t;
 
-void twistCb( const geometry_msgs::Twist &twist_msg){
-
-  float dt = (millis() - old_t) / (float)1000;
+void publishOdometry(){
 
   long rightTicks = encoder.getRightTicks();
   long leftTicks = encoder.getLeftTicks();
+  encoder.clearTicks();
 
-  nh.logdebug("Debug Statement");
-  mobileCar.execute(twist_msg.linear.x, twist_msg.angular.z, leftTicks, rightTicks, dt, &leftPID, &rightPID);
+  float dt = 0.2;
 
-  motor.drive(mobileCar.getRightPWM(), mobileCar.getLeftPWM());
-
+  mobileCar.updateOdometry(leftTicks, rightTicks, dt);
+  
   // Pusblish Odometry
   odometry_msg.header.stamp = nh.now();
   odometry_msg.pose.pose.position.x = mobileCar.getX();
   odometry_msg.pose.pose.position.y = mobileCar.getY();
+  odometry_msg.pose.pose.orientation.z = sin((mobileCar.getTheta() / 2.0) * DEG_TO_RAD);
+  odometry_msg.pose.pose.orientation.w = cos((mobileCar.getTheta() / 2.0) * DEG_TO_RAD);
   // TODO : imu quarternion
-  odometry_msg.twist.twist.linear.x = mobileCar.getVr() - mobileCar.getVl();
-  odometry_msg.twist.twist.angular.z = mobileCar.getTheta();
+  odometry_msg.twist.twist.linear.x = mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * cos(mobileCar.getTheta() * DEG_TO_RAD) / 2.0;
+  odometry_msg.twist.twist.linear.y = mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * sin(mobileCar.getTheta() * DEG_TO_RAD) / 2.0;
+  odometry_msg.twist.twist.angular.z = mobileCar.getRadius() * (mobileCar.getVr() - mobileCar.getVl()) / mobileCar.getL();
   // need convariance ??
   pub_odometry.publish(&odometry_msg);
+
+}
+
+void twistCb( const geometry_msgs::Twist &twist_msg){
+
+  float dt = 0.2; //(millis() - old_t) / (float)1000;
+
+  double v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
+
+  mobileCar.execute(v, twist_msg.angular.z, dt, &leftPID, &rightPID);
+
+  motor.drive(mobileCar.getRightPWM(), mobileCar.getLeftPWM());
+  
   float_msg.data = dt;
   pub_float.publish(&float_msg);
-  encoder.clearTicks();
+  
   old_t = millis();
   
 }
@@ -91,15 +105,12 @@ void setup()
 
   nh.advertise(pub_odometry);
   nh.advertise(pub_float);
-  
-  nh.logdebug("setup Statement");
 
   pinMode(IR_PIN, INPUT);
   motor.setup();
   encoder.setup();
+
   
-
-
   odometry_msg.header.frame_id = "/base_link";
   odometry_msg.child_frame_id = "/base_link";
 }
@@ -109,7 +120,12 @@ long range_time;
 
 void loop()
 {
-  nh.logdebug("loop Statement");
+  if(millis() >= range_time){
+
+    publishOdometry();
+
+    range_time = millis() + 200;
+  }
   
   nh.spinOnce();
 }

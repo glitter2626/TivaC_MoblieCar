@@ -3,6 +3,7 @@
 
 #include<Encoder.h>
 #include<PID.h>
+#include<Motordriver.h>
 
 class MobileCar{
 
@@ -18,10 +19,10 @@ class MobileCar{
 		int leftPwm;
 		
 		const float pi = 3.1415;
-		const float radius = 19.0;
+		const float radius = 0.045;
 		const float l = 11.0;
 
-		const float MAX_VELOCITY = 5.0;
+		const float MAX_VELOCITY = 0.35;
 
 	public:
 		
@@ -38,28 +39,45 @@ class MobileCar{
 			leftPwm = 0;
 		};
 
-		void execute(double v, double w, long leftTicks, long rightTicks, float dt, PID *leftPid, PID *rightPid){
+		void execute(double v, double w, float dt, PID *leftPid, PID *rightPid){
 
-			double Vr_obj = (2*v + w*l) / (2*radius);
-			double Vl_obj = (2*v - w*l) / (2*radius);
+			double Vr_obj = (2*v + w*l) / (2.0*radius);
+			double Vl_obj = (2*v - w*l) / (2.0*radius);	
 
-			double Dr = 2*pi*radius*rightTicks/TPR;
-			double Dl = 2*pi*radius*leftTicks/TPR;
+			
+			double velocityToPwm = 255.0 / MAX_VELOCITY;
+
+			rightPwm = (int)(Vr_obj*radius*velocityToPwm);  
+			leftPwm = (int)(Vl_obj*radius*velocityToPwm);
+
+			
+			//rightPwm = (int)rightPid->execute(Vr_obj*radius*velocityToPwm, Vr_fbk*velocityToPwm);  
+			//leftPwm = (int)leftPid->execute(Vl_obj*radius*velocityToPwm, Vl_fbk*velocityToPwm);
+
+			
+		};
+
+		void updateOdometry(long leftTicks, long rightTicks, float dt){
+
+			double Dr = 2.0*pi*radius*rightTicks/(double)TPR;
+			double Dl = 2.0*pi*radius*leftTicks/(double)TPR;
 			double Dc = (Dr + Dl) / (double)2;
-
+ 
 			x = x + Dc * cos(theta);
 			y = y + Dc * sin(theta);
 			theta = theta + (Dr - Dl) / l;
 
-			Vr_fbk = Dr / dt;
-			Vl_fbk = Dl / dt;
+			Vr_fbk = Dr / (dt * radius);
+			Vl_fbk = Dl / (dt * radius);
+		}
 
-			double velocityToPwm = 255 / MAX_VELOCITY;
+		float getRadius(){
+			return radius;
+		};
 
-			rightPwm = (int)rightPid->execute(Vr_obj*velocityToPwm, Vr_fbk*velocityToPwm);  // radius*Vr_obj*velocityToPwm
-			leftPwm = (int)leftPid->execute(Vl_obj*velocityToPwm, Vl_fbk*velocityToPwm);
 
-			
+		float getL(){
+			return l;
 		};
 
 		double getX(){
