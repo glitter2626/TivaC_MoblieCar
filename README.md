@@ -15,6 +15,7 @@
     export ROS_IP=$MY_IP  
     export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
 * In remote:  
+    export ROS_IP=**REMOTE_IP**  
     export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
                      
 ## Tiva TM4C1294 Pin Table(3.3v): 
