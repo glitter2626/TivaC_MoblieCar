@@ -1,7 +1,7 @@
 #ifndef _ENCODER_H_
 #define _ENCODER_H_
 
-#define TPR 4200  // ticks / per rev
+#define TPR 2100  // ticks / per rev
 
 class Encoder{
 

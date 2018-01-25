@@ -20,7 +20,7 @@ class MobileCar{
 		
 		const float pi = 3.1415;
 		const float radius = 0.045;
-		const float l = 11.0;
+		const float l = 0.36;
 
 		const float MAX_VELOCITY = 0.35;
 

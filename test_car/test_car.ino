@@ -45,8 +45,11 @@ nav_msgs::Odometry odometry_msg;
 ros::Publisher pub_odometry("/Odometry", &odometry_msg);
 
 
-std_msgs::Float64 float_msg;
-ros::Publisher pub_float("/ggggg", &float_msg);
+std_msgs::Float64 pwmR_msg;
+ros::Publisher pub_pwmR("/pwmR", &pwmR_msg);
+
+std_msgs::Float64 pwmL_msg;
+ros::Publisher pub_pwmL("/pwmL", &pwmL_msg);
 
 unsigned long old_t;
 
@@ -85,8 +88,10 @@ void twistCb( const geometry_msgs::Twist &twist_msg){
 
   motor.drive(mobileCar.getRightPWM(), mobileCar.getLeftPWM());
   
-  float_msg.data = dt;
-  pub_float.publish(&float_msg);
+  pwmR_msg.data = mobileCar.getRightPWM();
+  pub_pwmR.publish(&pwmR_msg);
+  pwmL_msg.data = mobileCar.getLeftPWM();
+  pub_pwmL.publish(&pwmL_msg);
   
   old_t = millis();
   
@@ -104,7 +109,8 @@ void setup()
   nh.subscribe(sub);
 
   nh.advertise(pub_odometry);
-  nh.advertise(pub_float);
+  nh.advertise(pub_pwmR);
+  nh.advertise(pub_pwmL);
 
   pinMode(IR_PIN, INPUT);
   motor.setup();
