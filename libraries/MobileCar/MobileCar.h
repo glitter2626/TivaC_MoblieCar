@@ -10,7 +10,7 @@ class MobileCar{
 	private:
 		double x;
 		double y;
-		double theta;
+		double theta;   // rad
 
 		double Vr_fbk;
 		double Vl_fbk;

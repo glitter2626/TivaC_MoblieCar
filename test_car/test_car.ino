@@ -1,6 +1,7 @@
 #include <ros.h>
 #include <ros/time.h>
 #include <tf/transform_broadcaster.h>
+#include <tf/tf.h>
 #include <sensor_msgs/Range.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
@@ -72,11 +73,12 @@ void publishOdometry(){
   odometry_msg.header.stamp = nh.now();
   odometry_msg.pose.pose.position.x = mobileCar.getX();
   odometry_msg.pose.pose.position.y = mobileCar.getY();
-  odometry_msg.pose.pose.orientation.z = sin((mobileCar.getTheta() / 2.0) * DEG_TO_RAD);
-  odometry_msg.pose.pose.orientation.w = cos((mobileCar.getTheta() / 2.0) * DEG_TO_RAD);
+  odometry_msg.pose.pose.orientation = tf::createQuaternionFromYaw(mobileCar.getTheta());
+  //odometry_msg.pose.pose.orientation.z = sin((mobileCar.getTheta() / 2.0) * DEG_TO_RAD);
+  //odometry_msg.pose.pose.orientation.w = cos((mobileCar.getTheta() / 2.0) * DEG_TO_RAD);
   // TODO : imu quarternion
-  odometry_msg.twist.twist.linear.x = mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * cos(mobileCar.getTheta() * DEG_TO_RAD) / 2.0;
-  odometry_msg.twist.twist.linear.y = mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * sin(mobileCar.getTheta() * DEG_TO_RAD) / 2.0;
+  odometry_msg.twist.twist.linear.x = mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * cos(mobileCar.getTheta()) / 2.0;
+  odometry_msg.twist.twist.linear.y = mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * sin(mobileCar.getTheta()) / 2.0;
   odometry_msg.twist.twist.angular.z = mobileCar.getRadius() * (mobileCar.getVr() - mobileCar.getVl()) / mobileCar.getL();
   // need convariance ??
   pub_odometry.publish(&odometry_msg);
@@ -87,8 +89,9 @@ void publishOdometry(){
   t.child_frame_id = "/base_link";
   t.transform.translation.x = odometry_msg.pose.pose.position.x; 
   t.transform.translation.y = odometry_msg.pose.pose.position.y; 
-  t.transform.rotation.z = odometry_msg.pose.pose.orientation.z; 
-  t.transform.rotation.w = odometry_msg.pose.pose.orientation.w;  
+  t.transform.rotation = odometry_msg.pose.pose.orientation;
+  //t.transform.rotation.z = odometry_msg.pose.pose.orientation.z; 
+  //t.transform.rotation.w = odometry_msg.pose.pose.orientation.w;  
   t.header.stamp = nh.now();
   broadcaster.sendTransform(t);
 
