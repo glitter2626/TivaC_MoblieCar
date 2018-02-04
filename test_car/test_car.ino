@@ -41,9 +41,9 @@ PID rightPID(0.1, 0.01, 0.01);
 /**************************************/
 
 
-ros::NodeHandle_<TivaCHardware,5,5,2000,2000>  nh;
+//ros::NodeHandle_<TivaCHardware,5,5,2000,2000>  nh;
 
-ros::NodeHandle  nh_;
+ros::NodeHandle  nh;
 geometry_msgs::TransformStamped t;
 tf::TransformBroadcaster broadcaster;
 
@@ -131,9 +131,9 @@ void setup()
   nh.advertise(pub_pwmR);
   nh.advertise(pub_pwmL);
 
-  nh_.getHardware()->setBaud(115200);
-  nh_.initNode();
-  broadcaster.init(nh_);
+  //nh_.getHardware()->setBaud(115200);
+  //nh_.initNode();
+  broadcaster.init(nh);
 
   pinMode(IR_PIN, INPUT);
   motor.setup();
@@ -157,5 +157,5 @@ void loop()
   }
   
   nh.spinOnce();
-  nh_.spinOnce();
+  //nh_.spinOnce();
 }
