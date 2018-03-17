@@ -1,8 +1,9 @@
 # TivaC_MoblieCar
 
 ## ROS Topic: [ROS common_msgs](http://wiki.ros.org/common_msgs)
-* Publish : sensor_msgs::Range (IR & Ultrasound) , nav_msgs::Odoemetry  
+* Publish : sensor_msgs::Range (IR & Ultrasound) , nav_msgs::Odometry  
 * Subscribe : geometry_msgs::Twist  
+* TF tree : odom -> base_link -> laser  
 
 ## ROS local & remote connect:
 * IP : ifconfig
@@ -27,7 +28,7 @@
     rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0 _baud:=115200
 * TF (frame: odom -> base_link -> laser):  
     check tf tree:  rosrun tf view_frames
-* Mapping:
+* Mapping:  
     rosrun gmapping slam_gmapping scan:=scan
   
 ## Tiva TM4C1294 Pin Table(3.3v): 
