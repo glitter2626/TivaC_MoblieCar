@@ -17,7 +17,15 @@
 * In remote:  
     export ROS_IP=**REMOTE_IP**  
     export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
-                     
+  
+## EXECUTE:
+* Enable RPLidar:
+    sudo chmod 666 /dev/ttyUSB0
+    roslaunch rplidar_ros view_rplidar.launch
+* Enable TivaC:
+    sudo chmod 666 /dev/ttyACM0 (or ttyACM1)
+    rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0 _baud:=115200
+* 
 ## Tiva TM4C1294 Pin Table(3.3v): 
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/23633173_1720082644676737_2065439414_o.jpg)
 
