@@ -21,10 +21,10 @@
   
 ## EXECUTE:
 * Enable RPLidar:  
-    sudo chmod 666 /dev/ttyUSB0
+    sudo chmod 666 /dev/ttyUSB0  
     roslaunch rplidar_ros view_rplidar.launch
 * Enable TivaC:  
-    sudo chmod 666 /dev/ttyACM0 (or ttyACM1)
+    sudo chmod 666 /dev/ttyACM0 (or ttyACM1)  
     rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0 _baud:=115200
 * TF (frame: odom -> base_link -> laser):  
     check tf tree:  rosrun tf view_frames
