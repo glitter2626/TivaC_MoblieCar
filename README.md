@@ -11,13 +11,13 @@
 * make sure open ssh : sudo service ssh start ; netstat -a | grep ssh
 * ssh **LOCAL_NAME**@**LOCAL_IP**
 * vim /home/**USER**/.bashrc
-* In local:  
+* In local:(local view)  
     export MY_IP=**LOCAL_IP**  
     export ROS_IP=$MY_IP  
-    export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
-* In remote:  
+    export ROS_MASTER_URI="http://**REMOTE_IP**:11311"
+* In remote:(local view)  
     export ROS_IP=**REMOTE_IP**  
-    export ROS_MASTER_URI="http://**LOCAL_IP**:11311"
+    export ROS_MASTER_URI="http://**REMOTE_IP**:11311"
   
 ## EXECUTE:
 * Enable RPLidar:  
