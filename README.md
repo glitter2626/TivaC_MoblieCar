@@ -29,7 +29,7 @@
 * TF (frame: odom -> base_link -> laser):  
     check tf tree:  rosrun tf view_frames  
     base_link -> laser: rosrun moblie_car moblie_car.launch
-* Mapping:  
+* Mapping:  
     rosrun gmapping slam_gmapping scan:=scan
   
 ## Tiva TM4C1294 Pin Table(3.3v): 
