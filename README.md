@@ -9,7 +9,7 @@
 * IP : ifconfig
 * ttyACM : dmesg | grep tty
 * make sure open ssh : sudo service ssh start ; netstat -a | grep ssh
-* ssh **LOCAL_NAME**@**LOCAL_IP**
+* ssh **REMOTE_NAME**@**REMOTE_IP** (local view)  
 * vim /home/**USER**/.bashrc
 * In local:(local view)  
     export MY_IP=**LOCAL_IP**  
