@@ -26,12 +26,16 @@
 * Enable TivaC:  
     sudo chmod 666 /dev/ttyACM0 (or ttyACM1)  
     rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0 _baud:=115200
-* TF (frame: odom -> base_link -> laser):  
+* TF (frame: odom -> base_link -> laser):  
     check tf tree: rosrun tf view_frames  
     base_link -> laser: rosrun moblie_car moblie_car.launch
 * Mapping:  
     rosrun gmapping slam_gmapping scan:=scan
-  
+
+## Simulation:  
+* Enable Turtlebot3 in Gazebo:  
+    roslaunch turtlebot3_gazebo turtlebot3_world.launch  
+    
 ## Tiva TM4C1294 Pin Table(3.3v): 
 ![image](https://github.com/glitter2626/TivaC_MoblieCar/blob/master/23633173_1720082644676737_2065439414_o.jpg)
 
