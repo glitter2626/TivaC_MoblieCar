@@ -66,6 +66,7 @@ class MobileCar{
 			x = x + Dc * cos(theta);
 			y = y + Dc * sin(theta);
 			theta = theta + (Dr - Dl) / l;
+			theta = atan2(sin(theta), cos(theta));
 
 			Vr_fbk = Dr / (dt * radius);
 			Vl_fbk = Dl / (dt * radius);

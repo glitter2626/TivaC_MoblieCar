@@ -57,6 +57,10 @@ ros::Publisher pub_pwmR("/pwmR", &pwmR_msg);
 std_msgs::Float64 pwmL_msg;
 ros::Publisher pub_pwmL("/pwmL", &pwmL_msg);
 
+std_msgs::Float64 theta_msg;
+ros::Publisher pub_theta("/theta", &theta_msg);
+
+
 unsigned long old_t;
 
 void publishOdometry(){
@@ -95,6 +99,10 @@ void publishOdometry(){
   t.header.stamp = nh.now();
   broadcaster.sendTransform(t);
 
+
+  theta_msg.data = mobileCar.getTheta();
+  pub_theta.publish(&theta_msg);
+
 }
 
 void twistCb( const geometry_msgs::Twist &twist_msg){
@@ -103,6 +111,8 @@ void twistCb( const geometry_msgs::Twist &twist_msg){
 
   double v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
 
+  //v = twist_msg.linear.x > 0? v:-v;
+  
   mobileCar.execute(v, twist_msg.angular.z, dt, &leftPID, &rightPID);
 
   motor.drive(mobileCar.getRightPWM(), mobileCar.getLeftPWM());
@@ -130,6 +140,7 @@ void setup()
   nh.advertise(pub_odometry);
   nh.advertise(pub_pwmR);
   nh.advertise(pub_pwmL);
+  nh.advertise(pub_theta);
 
   //nh_.getHardware()->setBaud(115200);
   //nh_.initNode();
