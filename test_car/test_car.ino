@@ -16,12 +16,12 @@
 #define TRIGGER_PIN         12
 #define ECHO_PIN            13
 #define IR_PIN              26   
-#define MOTOR_LEFT_A        11
-#define MOTOR_LEFT_B        31
-#define MOTOR_LEFT_PWM      PM_4
-#define MOTOR_RIGHT_A       32
-#define MOTOR_RIGHT_B       33
-#define MOTOR_RIGHT_PWM     PM_5
+#define MOTOR_LEFT_A        32
+#define MOTOR_LEFT_B        33
+#define MOTOR_LEFT_PWM      PM_5
+#define MOTOR_RIGHT_A       11
+#define MOTOR_RIGHT_B       31
+#define MOTOR_RIGHT_PWM     PM_4
 #define ENCODER_LEFT_A      71
 #define ENCODER_LEFT_B      72
 #define ENCODER_RIGHT_A     73
@@ -35,8 +35,8 @@ MobileCar mobileCar(0.0, 0.0, 0.0);     // x, y, theta
 
 /****PID for Kp Kd Ki ,  need test ****/
 
-PID leftPID(0.1, 0.01, 0.01);
-PID rightPID(0.1, 0.01, 0.01);
+PID leftPID(4.0, 0.01, 0.1);
+PID rightPID(4.0, 0.01, 0.1);
 
 /**************************************/
 
@@ -60,7 +60,6 @@ ros::Publisher pub_pwmL("/pwmL", &pwmL_msg);
 std_msgs::Float64 theta_msg;
 ros::Publisher pub_theta("/theta", &theta_msg);
 
-
 unsigned long old_t;
 
 void publishOdometry(){
@@ -69,7 +68,7 @@ void publishOdometry(){
   long leftTicks = encoder.getLeftTicks();
   encoder.clearTicks();
 
-  float dt = 0.2;
+  float dt = 0.1;
 
   mobileCar.updateOdometry(leftTicks, rightTicks, dt);
   
@@ -107,11 +106,12 @@ void publishOdometry(){
 
 void twistCb( const geometry_msgs::Twist &twist_msg){
 
-  float dt = 0.2; //(millis() - old_t) / (float)1000;
+  float dt = 0.1; //(millis() - old_t) / (float)1000;
 
   double v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
 
-  //v = twist_msg.linear.x > 0? v:-v;
+  v = twist_msg.linear.x > 0? v:-v;
+
   
   mobileCar.execute(v, twist_msg.angular.z, dt, &leftPID, &rightPID);
 
@@ -160,11 +160,12 @@ long range_time;
 
 void loop()
 {
+  
   if(millis() >= range_time){
 
     publishOdometry();
 
-    range_time = millis() + 200;
+    range_time = millis() + 100;
   }
   
   nh.spinOnce();

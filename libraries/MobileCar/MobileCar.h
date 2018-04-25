@@ -51,8 +51,8 @@ class MobileCar{
 			leftPwm = (int)(Vl_obj*radius*velocityToPwm);
 
 			
-			//rightPwm = (int)rightPid->execute(Vr_obj*radius*velocityToPwm, Vr_fbk*velocityToPwm);  
-			//leftPwm = (int)leftPid->execute(Vl_obj*radius*velocityToPwm, Vl_fbk*velocityToPwm);
+			//rightPwm = (int)rightPid->execute(Vr_obj*radius*velocityToPwm, Vr_fbk*radius*velocityToPwm);  
+			//leftPwm = (int)leftPid->execute(Vl_obj*radius*velocityToPwm, Vl_fbk*radius*velocityToPwm);
 
 			
 		};
