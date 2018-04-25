@@ -6,6 +6,7 @@
 * TF tree : odom -> base_link -> laser  
 
 ## ROS local & remote connect:
+* Wifi Setup: http://imchao.wang/2014/01/02/make-you-raspberrypi-auto-connect-to-wifi/
 * IP : ifconfig
 * ttyACM : dmesg | grep tty
 * make sure open ssh : sudo service ssh start ; netstat -a | grep ssh
