@@ -68,7 +68,7 @@ void publishOdometry(){
   long leftTicks = encoder.getLeftTicks();
   encoder.clearTicks();
 
-  float dt = 0.1;
+  float dt = 0.02;
 
   mobileCar.updateOdometry(leftTicks, rightTicks, dt);
   
@@ -106,7 +106,7 @@ void publishOdometry(){
 
 void twistCb( const geometry_msgs::Twist &twist_msg){
 
-  float dt = 0.1; //(millis() - old_t) / (float)1000;
+  float dt = 0.02; //(millis() - old_t) / (float)1000;
 
   double v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
 
@@ -160,14 +160,11 @@ long range_time;
 
 void loop()
 {
-  
-  if(millis() >= range_time){
 
-    publishOdometry();
+  publishOdometry();
 
-    range_time = millis() + 100;
-  }
-  
   nh.spinOnce();
   //nh_.spinOnce();
+
+  delay(20);
 }

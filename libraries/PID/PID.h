@@ -33,7 +33,7 @@ class PID{
 
 		double execute(double value, double feedback){
 			
-			float dt = 0.1;
+			float dt = 0.02;
 			
 			e = value - feedback;
 			e_dot = (e - old_e) / dt;
@@ -41,7 +41,7 @@ class PID{
 			double u = Kp * e + Kd * e_dot + Ki * E;
 			old_e = e;
 
-			return u * dt + feedback;
+			return u;
 		};
 
 };
