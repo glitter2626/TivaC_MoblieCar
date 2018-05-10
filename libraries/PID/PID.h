@@ -33,7 +33,7 @@ class PID{
 
 		double execute(double value, double feedback){
 			
-			float dt = 0.02;
+			float dt = 0.1;
 			
 			e = value - feedback;
 			e_dot = (e - old_e) / dt;

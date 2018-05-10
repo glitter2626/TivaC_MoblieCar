@@ -71,12 +71,12 @@ class Motordriver{
 			digitalWrite(rightA, LOW);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, pwmR);
-			delay(2);
+			//delay(2);
 
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, LOW);
 			analogWrite(leftPwm, pwmL);
-			delay(2);
+			//delay(2);
 		};
 
 		void backward(int pwmR, int pwmL){
@@ -84,12 +84,12 @@ class Motordriver{
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, LOW);
 			analogWrite(rightPwm, -pwmR);
-			delay(2);
+			//delay(2);
 
 			digitalWrite(leftA, LOW);
 			digitalWrite(leftB, HIGH);
 			analogWrite(leftPwm, -pwmL);
-			delay(2);
+			//delay(2);
 		};
 
 		void stop(){
@@ -97,12 +97,12 @@ class Motordriver{
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, HIGH);
 			analogWrite(leftPwm, 0);
-			delay(2);
+			//delay(2);
 
 			digitalWrite(rightA, HIGH);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, 0);
-			delay(2);
+			//delay(2);
 		};
 
 		void moveRight(int pwmR, int pwmL){
@@ -111,26 +111,26 @@ class Motordriver{
 				digitalWrite(rightA, LOW);
 				digitalWrite(rightB, HIGH);
 				analogWrite(rightPwm, pwmR);
-				delay(2);
+				//delay(2);
 			}
 			else if(pwmR < 0){
 				digitalWrite(rightA, HIGH);
 				digitalWrite(rightB, LOW);
 				analogWrite(rightPwm, -pwmR);
-				delay(2);
+				//delay(2);
 
 			}
 			else{
 				digitalWrite(rightA, HIGH);
 				digitalWrite(rightB, HIGH);
 				analogWrite(rightPwm, 0);
-				delay(2);
+				//delay(2);
 			}
 
 			digitalWrite(leftA, HIGH);
 			digitalWrite(leftB, LOW);
 			analogWrite(leftPwm, pwmL);
-			delay(2);
+			//delay(2);
 		};
 
 		void moveLeft(int pwmR, int pwmL){
@@ -138,25 +138,25 @@ class Motordriver{
 			digitalWrite(rightA, LOW);
 			digitalWrite(rightB, HIGH);
 			analogWrite(rightPwm, pwmR);
-			delay(2);
+			//delay(2);
 
 			if(pwmL > 0){
 				digitalWrite(leftA, HIGH);
 				digitalWrite(leftB, LOW);
 				analogWrite(leftPwm, pwmL);
-				delay(2);
+				//delay(2);
 			}
 			else if(pwmL < 0){
 				digitalWrite(leftA, LOW);
 				digitalWrite(leftB, HIGH);
 				analogWrite(leftPwm, -pwmL);
-				delay(2);
+				//delay(2);
 			}
 			else{
 				digitalWrite(leftA, HIGH);
 				digitalWrite(leftB, HIGH);
 				analogWrite(leftPwm, 0);
-				delay(2);
+				//delay(2);
 			}
 
 		};

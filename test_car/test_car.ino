@@ -62,15 +62,18 @@ ros::Publisher pub_theta("/theta", &theta_msg);
 
 unsigned long old_t;
 
+
 void publishOdometry(){
 
   long rightTicks = encoder.getRightTicks();
   long leftTicks = encoder.getLeftTicks();
   encoder.clearTicks();
 
-  float dt = 0.02;
+  double dt = (millis() - old_t) / 1000.0;
 
   mobileCar.updateOdometry(leftTicks, rightTicks, dt);
+  
+  old_t = millis();
   
   // Pusblish Odometry
   odometry_msg.header.stamp = nh.now();
@@ -80,9 +83,9 @@ void publishOdometry(){
   //odometry_msg.pose.pose.orientation.z = sin((mobileCar.getTheta() / 2.0) * DEG_TO_RAD);
   //odometry_msg.pose.pose.orientation.w = cos((mobileCar.getTheta() / 2.0) * DEG_TO_RAD);
   // TODO : imu quarternion
-  odometry_msg.twist.twist.linear.x = mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * cos(mobileCar.getTheta()) / 2.0;
-  odometry_msg.twist.twist.linear.y = mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * sin(mobileCar.getTheta()) / 2.0;
-  odometry_msg.twist.twist.angular.z = mobileCar.getRadius() * (mobileCar.getVr() - mobileCar.getVl()) / mobileCar.getL();
+  odometry_msg.twist.twist.linear.x = mobileCar.getVx(); //mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * cos(mobileCar.getTheta()) / 2.0;
+  odometry_msg.twist.twist.linear.y = mobileCar.getVy(); //mobileCar.getRadius() * (mobileCar.getVr() + mobileCar.getVl()) * sin(mobileCar.getTheta()) / 2.0;
+  odometry_msg.twist.twist.angular.z = mobileCar.getW(); //mobileCar.getRadius() * (mobileCar.getVr() - mobileCar.getVl()) / mobileCar.getL();
   // need convariance ??
   pub_odometry.publish(&odometry_msg);
 
@@ -106,7 +109,7 @@ void publishOdometry(){
 
 void twistCb( const geometry_msgs::Twist &twist_msg){
 
-  float dt = 0.02; //(millis() - old_t) / (float)1000;
+  float dt = 0.1; // unused
 
   double v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
 
@@ -122,7 +125,6 @@ void twistCb( const geometry_msgs::Twist &twist_msg){
   pwmL_msg.data = mobileCar.getLeftPWM();
   pub_pwmL.publish(&pwmL_msg);
   
-  old_t = millis();
   
 }
 
@@ -166,5 +168,5 @@ void loop()
   nh.spinOnce();
   //nh_.spinOnce();
 
-  delay(20);
+  delay(100);
 }
