@@ -109,7 +109,7 @@ void publishOdometry(){
 
 void twistCb( const geometry_msgs::Twist &twist_msg){
 
-  float dt = 0.1; // unused
+  float dt = 0.02; // unused
 
   double v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
 
@@ -168,5 +168,5 @@ void loop()
   nh.spinOnce();
   //nh_.spinOnce();
 
-  delay(100);
+  delay(20);
 }
