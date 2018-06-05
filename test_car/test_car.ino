@@ -82,7 +82,7 @@ void publishOdometry(){
   motor.drive(mobileCar.getRightPWM(), mobileCar.getLeftPWM());
  
   double diff = mobileCar.getX();
-  mobileCar.updateOdometry(leftTicks, rightTicks, 0.15);
+  mobileCar.updateOdometry(leftTicks, rightTicks, dt);
   diff = mobileCar.getX() - diff;
   
   
@@ -129,7 +129,7 @@ void twistCb( const geometry_msgs::Twist &twist_msg){
 
   float dt = 0.02; // unused
 
-  double v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
+  v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
 
   v = twist_msg.linear.x > 0? v:-v;
 
