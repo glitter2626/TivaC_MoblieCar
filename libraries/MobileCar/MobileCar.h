@@ -22,6 +22,9 @@ class MobileCar{
 		int rightPwm;
 		int leftPwm;
 		
+		double obj_rightTicks;
+		double obj_leftTicks;
+		
 		const float pi = 3.1415;
 		const float radius = 0.045;
 		const float l = 0.36;
@@ -44,9 +47,24 @@ class MobileCar{
 
 			rightPwm = 0;
 			leftPwm = 0;
+			
+			obj_rightTicks = 0.0;
+		    obj_leftTicks = 0.0;
 		};
 
-		void execute(double v, double w, float dt, PID *leftPid, PID *rightPid){
+		void execute(double v, double w, float dt, PID *leftPid, PID *rightPid, long leftTicks, long rightTicks){
+		
+		    if(v == 0.0 && w == 0.0){
+		    
+		        rightPid->reset();
+		        leftPid->reset();
+		        
+		        rightPwm = 0;
+		        leftPwm = 0;
+		        
+		        return;
+		    }
+		
 
 			double Vr_obj = (2*v + w*l) / (2.0*radius);
 			double Vl_obj = (2*v - w*l) / (2.0*radius);	
@@ -54,17 +72,23 @@ class MobileCar{
 			
 			double velocityToPwm = 255.0 / MAX_VELOCITY;
 
-			rightPwm = (int)(Vr_obj*radius*velocityToPwm);  
-			leftPwm = (int)(Vl_obj*radius*velocityToPwm);
-
+			//rightPwm = (int)(Vr_obj*radius*velocityToPwm);  
+			//leftPwm = (int)(Vl_obj*radius*velocityToPwm);
 			
-		    //rightPwm = (int)rightPid->execute(Vr_obj*radius*velocityToPwm, Vr_fbk*radius*velocityToPwm);  
-			//leftPwm = (int)leftPid->execute(Vl_obj*radius*velocityToPwm, Vl_fbk*radius*velocityToPwm);
-
+			obj_rightTicks = TPR / ((2.0 * radius * pi) / (Vr_obj * radius * dt));
+			obj_leftTicks = TPR / ((2.0 * radius * pi) / (Vl_obj * radius * dt));
 			
+		    rightPwm = int(rightPwm + rightPid->execute(obj_rightTicks, rightTicks, dt));  
+			leftPwm = int(leftPwm + leftPid->execute(obj_leftTicks, leftTicks, dt));
+
+			rightPwm = rightPwm > 255? 255 : rightPwm;
+			rightPwm = rightPwm < -255? -255 : rightPwm;
+			
+			leftPwm = leftPwm > 255? 255 : leftPwm;
+			leftPwm = leftPwm < -255? -255 : leftPwm;
 		};
 
-		void updateOdometry(long leftTicks, long rightTicks, float dt){
+		void updateOdometry(long leftTicks, long rightTicks, double dt){
 
 			double Dr = 2.0*pi*radius*rightTicks/(double)TPR;
 			double Dl = 2.0*pi*radius*leftTicks/(double)TPR;
@@ -133,6 +157,14 @@ class MobileCar{
 
 		int getLeftPWM(){
 			return leftPwm;
+		};
+		
+		double getObjRightTicks(){
+		    return obj_rightTicks;
+		};
+		
+		double getObjLeftTicks(){
+		    return obj_leftTicks;
 		};
 };
 

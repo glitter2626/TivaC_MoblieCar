@@ -52,28 +52,39 @@ ros::Publisher pub_odometry("/odom", &odometry_msg);
 
 
 std_msgs::Float64 pwmR_msg;
-ros::Publisher pub_pwmR("/pwmR", &pwmR_msg);
+ros::Publisher pub_pwmR("/rightTicks", &pwmR_msg);
 
 std_msgs::Float64 pwmL_msg;
-ros::Publisher pub_pwmL("/pwmL", &pwmL_msg);
+ros::Publisher pub_pwmL("/leftTicks", &pwmL_msg);
 
 std_msgs::Float64 theta_msg;
 ros::Publisher pub_theta("/theta", &theta_msg);
 
 unsigned long old_t;
 
+volatile long prev_leftTicks = 0;
+volatile long prev_rightTicks = 0;
+
+double v = 0.0;
+double w = 0.0;
 
 void publishOdometry(){
-
+  
   long rightTicks = encoder.getRightTicks();
   long leftTicks = encoder.getLeftTicks();
   encoder.clearTicks();
-
-  double dt = (millis() - old_t) / 1000.0;
-
-  mobileCar.updateOdometry(leftTicks, rightTicks, dt);
   
+  double dt = (millis() - old_t) / 1000.0;
   old_t = millis();
+  
+  mobileCar.execute(v, w, dt, &leftPID, &rightPID, leftTicks, rightTicks);
+
+  motor.drive(mobileCar.getRightPWM(), mobileCar.getLeftPWM());
+ 
+  double diff = mobileCar.getX();
+  mobileCar.updateOdometry(leftTicks, rightTicks, 0.15);
+  diff = mobileCar.getX() - diff;
+  
   
   // Pusblish Odometry
   odometry_msg.header.stamp = nh.now();
@@ -101,9 +112,16 @@ void publishOdometry(){
   t.header.stamp = nh.now();
   broadcaster.sendTransform(t);
 
-
-  theta_msg.data = mobileCar.getTheta();
+  pwmR_msg.data = rightTicks;
+  pub_pwmR.publish(&pwmR_msg);
+  pwmL_msg.data = leftTicks;
+  pub_pwmL.publish(&pwmL_msg);
+  
+  theta_msg.data = mobileCar.getObjRightTicks();
   pub_theta.publish(&theta_msg);
+
+  prev_leftTicks = leftTicks;
+  prev_rightTicks = rightTicks;
 
 }
 
@@ -115,17 +133,10 @@ void twistCb( const geometry_msgs::Twist &twist_msg){
 
   v = twist_msg.linear.x > 0? v:-v;
 
+  w = twist_msg.angular.z;
   
-  mobileCar.execute(v, twist_msg.angular.z, dt, &leftPID, &rightPID);
+  
 
-  motor.drive(mobileCar.getRightPWM(), mobileCar.getLeftPWM());
-  
-  pwmR_msg.data = mobileCar.getRightPWM();
-  pub_pwmR.publish(&pwmR_msg);
-  pwmL_msg.data = mobileCar.getLeftPWM();
-  pub_pwmL.publish(&pwmL_msg);
-  
-  
 }
 
 ros::Subscriber<geometry_msgs::Twist> sub("/cmd_vel", &twistCb );
@@ -168,5 +179,5 @@ void loop()
   nh.spinOnce();
   //nh_.spinOnce();
 
-  delay(20);
+  //delay(925);
 }

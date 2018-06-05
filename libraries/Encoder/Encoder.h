@@ -1,7 +1,7 @@
 #ifndef _ENCODER_H_
 #define _ENCODER_H_
 
-#define TPR 2100  // ticks / per rev
+#define TPR 2100.0  // ticks / per rev
 
 class Encoder{
 
@@ -15,6 +15,9 @@ class Encoder{
 
 		static volatile long leftTicks;
 		static volatile long rightTicks;
+		
+		static volatile bool leftEncoderBSet;
+		static volatile bool rightEncoderBSet;
 
 		static volatile long ticks;
 
@@ -32,9 +35,9 @@ class Encoder{
 
 		static void updateLeftEncoder(){
 
-			int leftB = digitalRead(leftPinB);
+			leftEncoderBSet = digitalRead(leftPinB);
 
-			leftTicks -= leftB? -1 : 1;
+			leftTicks -= leftEncoderBSet? -1 : 1;
 			
 			ticks++;
 
@@ -43,9 +46,9 @@ class Encoder{
 
 		static void updateRightEncoder(){
 
-			int rightB = digitalRead(rightPinB);
+			rightEncoderBSet = digitalRead(rightPinB);
 
-			rightTicks += rightB? -1 : 1;
+			rightTicks += rightEncoderBSet? -1 : 1;
 
 			ticks++;
 
@@ -97,6 +100,9 @@ int Encoder::rightPinB;
 
 volatile long Encoder::leftTicks;
 volatile long Encoder::rightTicks;
+
+volatile bool Encoder::leftEncoderBSet;
+volatile bool Encoder::rightEncoderBSet;
 
 volatile long Encoder::ticks;
 

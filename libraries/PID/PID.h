@@ -31,9 +31,7 @@ class PID{
 			this->Ki = Ki;	
 		};
 
-		double execute(double value, double feedback){
-			
-			float dt = 0.1;
+		double execute(double value, double feedback, double dt){
 			
 			e = value - feedback;
 			e_dot = (e - old_e) / dt;
@@ -41,7 +39,17 @@ class PID{
 			double u = Kp * e + Kd * e_dot + Ki * E;
 			old_e = e;
 
-			return u;
+			return u / 50.0;
+		};
+		
+		void reset(){
+		
+		    e = 0.0;	// input value
+		    old_e = 0.0;	// previous e
+
+		    e_dot = 0.0;	// e - old_e
+		    E = 0.0;	// E += e
+
 		};
 
 };
