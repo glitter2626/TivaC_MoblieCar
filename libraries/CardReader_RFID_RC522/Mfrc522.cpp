@@ -12,10 +12,10 @@
 
 Mfrc522::Mfrc522(int chipSelectPin, int NRSTPD)
 {
-	pinMode(chipSelectPin, OUTPUT);
+	//pinMode(chipSelectPin, OUTPUT);
 	_chipSelectPin = chipSelectPin;
-	pinMode(NRSTPD, OUTPUT);
-	digitalWrite(NRSTPD, HIGH);
+	//pinMode(NRSTPD, OUTPUT);
+	//digitalWrite(NRSTPD, HIGH);
 	_NRSTPD = NRSTPD;
 }
 

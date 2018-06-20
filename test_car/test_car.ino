@@ -12,6 +12,12 @@
 #include <MobileCar.h>
 #include <PID.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Bool.h>
+#include <std_msgs/String.h>
+#include "Mfrc522.h"
+#include <SPI.h>
+
+
 
 #define TRIGGER_PIN         12
 #define ECHO_PIN            13
@@ -35,8 +41,8 @@ MobileCar mobileCar(0.0, 0.0, 0.0);     // x, y, theta
 
 /****PID for Kp Kd Ki ,  need test ****/
 
-PID leftPID(4.0, 0.01, 0.1);
-PID rightPID(4.0, 0.01, 0.1);
+PID leftPID(6.0, 0.01, 0.05);
+PID rightPID(6.0, 0.01, 0.05);
 
 /**************************************/
 
@@ -60,6 +66,13 @@ ros::Publisher pub_pwmL("/leftTicks", &pwmL_msg);
 std_msgs::Float64 theta_msg;
 ros::Publisher pub_theta("/theta", &theta_msg);
 
+std_msgs::Bool rfid_msg;
+ros::Publisher pub_rfid("/rfid", &rfid_msg);
+
+std_msgs::String rfidTag_msg;
+ros::Publisher pub_rfidTag("/rfid_tag", &rfidTag_msg);
+
+
 unsigned long old_t;
 
 volatile long prev_leftTicks = 0;
@@ -67,6 +80,11 @@ volatile long prev_rightTicks = 0;
 
 double v = 0.0;
 double w = 0.0;
+
+int CS = 63;              
+int NRSTPD = 54;
+Mfrc522 Mfrc522(CS,NRSTPD);
+unsigned char serNum[5];
 
 void publishOdometry(){
   
@@ -127,19 +145,80 @@ void publishOdometry(){
 
 void twistCb( const geometry_msgs::Twist &twist_msg){
 
-  float dt = 0.02; // unused
-
   v = sqrt(pow(twist_msg.linear.x, 2) + pow(twist_msg.linear.y, 2));
 
   v = twist_msg.linear.x > 0? v:-v;
 
   w = twist_msg.angular.z;
   
-  
-
 }
 
 ros::Subscriber<geometry_msgs::Twist> sub("/cmd_vel", &twistCb );
+
+void rfid_detect(){
+
+  unsigned char status;
+  unsigned char str[MAX_LEN];
+  /*Searching Card, read card type  
+  Request(unsigned char reqMode, unsigned char *TagType);
+  reqMode: Search method TagType: return card type
+  return MI_OK if successed*/
+  status = Mfrc522.Request(PICC_REQIDL, str);
+
+  rfid_msg.data = false;
+  rfidTag_msg.data = "00000";
+  
+  if (status == MI_OK)
+  {
+    /*
+    Serial.print("Card detected: ");
+    Serial.print(str[0],BIN);
+    Serial.print(" , ");
+    Serial.print(str[1],BIN);
+    Serial.println("");
+    */
+    rfid_msg.data = true;
+  }
+  /*Read card serial number
+  serNum: 4 bytes card serial number, 5th is recheck byte
+  return MI_OK if successed*/
+  status = Mfrc522.Anticoll(str);
+  memcpy(serNum, str, 5);
+  if (status == MI_OK)
+  {
+    /*
+    Serial.print("The card's number is: ");
+    Serial.print(serNum[0]);
+    Serial.print(" , ");
+    Serial.print(serNum[1]);
+    Serial.print(" , ");
+    Serial.print(serNum[2]);
+    Serial.print(" , ");
+    Serial.print(serNum[3]);
+    Serial.print(" , ");
+    Serial.print(serNum[4]);
+    Serial.println("");
+    */
+    char number[4];
+    char buffer[256];
+    sprintf(buffer,"%d", (int)serNum[0]);
+    sprintf(number,"%d", (int)serNum[1]);
+    strcat(buffer, number);
+    sprintf(number,"%d", (int)serNum[2]);
+    strcat(buffer, number);
+    sprintf(number,"%d", (int)serNum[3]);
+    strcat(buffer, number);
+    sprintf(number,"%d", (int)serNum[4]);
+    strcat(buffer, number);
+    rfidTag_msg.data = buffer;
+    
+  }
+
+  pub_rfid.publish(&rfid_msg);
+  pub_rfidTag.publish(&rfidTag_msg);
+
+  Mfrc522.Halt();                        
+}
 
 void setup()
 {
@@ -154,6 +233,8 @@ void setup()
   nh.advertise(pub_pwmR);
   nh.advertise(pub_pwmL);
   nh.advertise(pub_theta);
+  nh.advertise(pub_rfid);
+  nh.advertise(pub_rfidTag);
 
   //nh_.getHardware()->setBaud(115200);
   //nh_.initNode();
@@ -166,6 +247,14 @@ void setup()
   
   odometry_msg.header.frame_id = "/odom";
   odometry_msg.child_frame_id = "/base_link";
+
+  SPI.setModule(1); 
+  pinMode(CS, OUTPUT); 
+  digitalWrite(CS, LOW);
+  pinMode(NRSTPD, OUTPUT); 
+  digitalWrite(NRSTPD, HIGH); 
+
+  Mfrc522.Init();
 }
 
 
@@ -176,8 +265,9 @@ void loop()
 
   publishOdometry();
 
+  rfid_detect();
+
   nh.spinOnce();
   //nh_.spinOnce();
 
-  //delay(925);
 }
