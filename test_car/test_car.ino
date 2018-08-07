@@ -16,7 +16,7 @@
 #include <std_msgs/String.h>
 #include "Mfrc522.h"
 #include <SPI.h>
-
+#include <StepperMotor.h>
 
 
 #define TRIGGER_PIN         12
@@ -24,10 +24,10 @@
 #define IR_PIN              26   
 #define MOTOR_LEFT_A        32
 #define MOTOR_LEFT_B        33
-#define MOTOR_LEFT_PWM      PM_5
+#define MOTOR_LEFT_PWM      30
 #define MOTOR_RIGHT_A       11
 #define MOTOR_RIGHT_B       31
-#define MOTOR_RIGHT_PWM     PM_4
+#define MOTOR_RIGHT_PWM     29
 #define ENCODER_LEFT_A      71
 #define ENCODER_LEFT_B      72
 #define ENCODER_RIGHT_A     73
@@ -38,6 +38,19 @@ Motordriver motor(MOTOR_LEFT_A, MOTOR_LEFT_B, MOTOR_LEFT_PWM, MOTOR_RIGHT_A, MOT
 Encoder encoder(ENCODER_LEFT_A, ENCODER_LEFT_B, ENCODER_RIGHT_A, ENCODER_RIGHT_B);
 
 MobileCar mobileCar(0.0, 0.0, 0.0);     // x, y, theta
+
+/**** stepmotor ***********************/
+
+StepperMotor motor1(47,48,49,50);
+//StepperMotor motor2(23,24,25,26);
+//StepperMotor motor3(40,39,38,37);
+
+int motorSpeed = 1; // motor gets slower as this number increases
+int motorSteps = 4076; // 4076 is approx 360 degrees
+
+// maximum speed about 15RPM at 5 volts with an Arduino
+
+/**************************************/
 
 /****PID for Kp Kd Ki ,  need test ****/
 
@@ -71,6 +84,9 @@ ros::Publisher pub_rfid("/rfid", &rfid_msg);
 
 std_msgs::String rfidTag_msg;
 ros::Publisher pub_rfidTag("/rfid_tag", &rfidTag_msg);
+
+std_msgs::Bool lifted_msg;
+ros::Publisher pub_lifted("/lifted", &lifted_msg);
 
 
 unsigned long old_t;
@@ -153,7 +169,31 @@ void twistCb( const geometry_msgs::Twist &twist_msg){
   
 }
 
+bool pre_lift = false;
+
+void liftCb( const std_msgs::Bool &lift_msg){
+    
+    if(lift_msg.data && !pre_lift){
+        
+         digitalWrite(70, HIGH);
+
+    }
+
+    if(!lift_msg.data && pre_lift){
+        
+        digitalWrite(70, LOW);
+
+    }
+    
+    pre_lift = lift_msg.data;
+/*
+    if(lift_msg.data)
+      motor1.step(-motorSteps); */
+}
+
 ros::Subscriber<geometry_msgs::Twist> sub("/cmd_vel", &twistCb );
+
+ros::Subscriber<std_msgs::Bool> sub_lift("/lift", &liftCb );
 
 void rfid_detect(){
 
@@ -228,6 +268,7 @@ void setup()
   nh.initNode();
   
   nh.subscribe(sub);
+  nh.subscribe(sub_lift);
 
   nh.advertise(pub_odometry);
   nh.advertise(pub_pwmR);
@@ -235,6 +276,7 @@ void setup()
   nh.advertise(pub_theta);
   nh.advertise(pub_rfid);
   nh.advertise(pub_rfidTag);
+  nh.advertise(pub_lifted);
 
   //nh_.getHardware()->setBaud(115200);
   //nh_.initNode();
@@ -248,6 +290,11 @@ void setup()
   odometry_msg.header.frame_id = "/odom";
   odometry_msg.child_frame_id = "/base_link";
 
+  //motor1.setStepDuration(motorSpeed);
+  pinMode(70, OUTPUT);
+  digitalWrite(70, LOW);
+  pinMode(69, INPUT);
+
   SPI.setModule(1); 
   pinMode(CS, OUTPUT); 
   digitalWrite(CS, LOW);
@@ -255,6 +302,7 @@ void setup()
   digitalWrite(NRSTPD, HIGH); 
 
   Mfrc522.Init();
+  
 }
 
 
@@ -262,6 +310,15 @@ long range_time;
 
 void loop()
 {
+  if(digitalRead(69) == HIGH){
+    lifted_msg.data = true;
+    pub_lifted.publish(&lifted_msg);
+  }
+  else{
+    lifted_msg.data = false;
+    pub_lifted.publish(&lifted_msg);
+  }
+    
 
   publishOdometry();
 
